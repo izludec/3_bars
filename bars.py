@@ -45,17 +45,17 @@ def get_closest_bar(bar_list, longitude, latitude):
 
 
 def get_version():
-    Url_Version = "http://api.data.mos.ru/version"
-    version = urlopen(Url_Version)
+    url_version = "http://api.data.mos.ru/version"
+    version = urlopen(url_version)
     version = json.loads(version.read().decode("utf-8"))["Version"]
     return version
 
 
-def get_Id():
-    url_Bars_Id = "http://api.data.mos.ru/v"+str(get_version())+"/datasets"
-    json_Bars_Id = urlopen(url_Bars_Id)
-    bars_Id = json.loads(json_Bars_Id.read().decode("utf-8"))
-    for bars in bars_Id:
+def get_id():
+    url_bars_id = "http://api.data.mos.ru/v"+str(get_version())+"/datasets"
+    json_bars_id = urlopen(url_bars_id)
+    bars_id = json.loads(json_bars_id.read().decode("utf-8"))
+    for bars in bars_id:
         bars_dataset = list(bars.values())
         for names in bars_dataset:
             if names == "Бары":
@@ -64,9 +64,9 @@ def get_Id():
 
 
 if __name__ == '__main__':
-    Url_Bars_List = "http://api.data.mos.ru/v"+str(get_version()) +\
-        "/datasets"+"/"+str(get_Id())+"/"+"rows?$orderby=SeatsCount"
-    bar_list = load_data(Url_Bars_List)
+    url_bars_list = "http://api.data.mos.ru/v"+str(get_version()) +\
+        "/datasets"+"/"+str(get_id())+"/"+"rows?$orderby=SeatsCount"
+    bar_list = load_data(url_bars_list)
     biggest_bar = get_biggest_bar(bar_list)
     smallest_bar = get_smallest_bar(bar_list)
     longitude = float(input("Input longitude"))
