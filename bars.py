@@ -6,27 +6,17 @@ from urllib.request import urlopen
 def load_data(filepath):
     bars_from_url = urlopen(filepath)
     bar_json = json.loads(bars_from_url.read().decode("utf-8"))
-    print(json.dumps(
-    bar_json, sort_keys=True, indent=4, ensure_ascii=False))
     return list(bar_json)
 
 
 def get_biggest_bar(bar_list):
-    list_biggest_bars = []
-    for bars in list(bar_list):
-        if bars["Cells"]["SeatsCount"] == \
-        list(bar_list)[-1]["Cells"]["SeatsCount"]:
-            list_biggest_bars.append(bars["Cells"]["Name"])
-    return list_biggest_bars
+    return max(bar_list, 
+    key = lambda bar: bar["Cells"]["SeatsCount"])["Cells"]["Name"]
 
 
 def get_smallest_bar(bar_list):
-    list_smallest_bars = []
-    for bars in list(bar_list):
-        if bars["Cells"]["SeatsCount"] == \
-        list(bar_list)[0]["Cells"]["SeatsCount"]:
-            list_smallest_bars.append(bars["Cells"]["Name"])
-    return list_smallest_bars
+    return min(bar_list, 
+    key = lambda bar: bar["Cells"]["SeatsCount"])["Cells"]["Name"]
 
 
 def get_closest_bar(bar_list, longitude, latitude):
@@ -34,15 +24,14 @@ def get_closest_bar(bar_list, longitude, latitude):
     distance = 0
     min_distance_bar = 0
     list_closest_bar = []
-    
-    for i, bars in enumerate(list(bar_list)):
+    for i, bars in enumerate(bar_list):
         x_diff = (longitude-bars["Cells"]["geoData"]["coordinates"][0])*63
         y_diff = (latitude-bars["Cells"]["geoData"]["coordinates"][1])*111
         distance = (math.sqrt((x_diff**2)+(y_diff**2)))
         if distance < min_distance and distance != 0:
             min_distance = distance
             min_distance_bar = i
-    list_closest_bar.append(list(bar_list)[min_distance_bar]["Cells"]["Name"])
+    list_closest_bar.append(bar_list[min_distance_bar]["Cells"]["Name"])
     list_closest_bar.append(min_distance)
     return list_closest_bar
 
@@ -75,24 +64,20 @@ if __name__ == '__main__':
     bar_list = load_data(url_bars_list)
     biggest_bars = get_biggest_bar(bar_list)
     smallest_bars = get_smallest_bar(bar_list)
-    longitude = 32
-    #float(input("Input longitude"))
-    latitude = 55
-    #float(input("Input latitude"))
+    longitude = float(input("Input longitude"))
+    latitude = float(input("Input latitude"))
     closest_bar = get_closest_bar(bar_list, longitude, latitude)
     print()
     print()
     print("Biggest bar")
     print("-------------------------------")
-    for bars in biggest_bars:
-        print(bars)
+    print(biggest_bars)
     print("-------------------------------")
     print()
     print()
     print("Smallest bar")
     print("-------------------------------")
-    for bars in smallest_bars:
-        print(bars)
+    print(smallest_bars)
     print("-------------------------------")
     print()
     print()
